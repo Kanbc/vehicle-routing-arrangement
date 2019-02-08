@@ -18,10 +18,9 @@ function [all_path] = findAllPath(old_all_path,tasks)
         all_path = [ all_path; job_matrix ];
     end
     
-    all_path = cellstr(all_path);
     is_done = lastPostionIsZero(all_path);
     if ~is_done
-        disp(all_path);
+        all_path = char(all_path)';
         all_path = findAllPath(all_path,tasks);
     end
 

@@ -1,6 +1,4 @@
-function [distance_number] = getDistance(startEndStr)
-    %UNTITLED7 Summary of this function goes here
-    %   Detailed explanation goes here
+function [distance_number] = getDistance(all_path,distances)
 
     distance_number = startEndStr;
 end
