@@ -3,10 +3,10 @@ function [distance_path] = getDistance(all_path, distances, tasks, node_names)
     name_arr = char(node_names.name);
     [row_num,~] = size(all_path);
 
-    % Find positive from active_path
+    % Find positive from tasks
     positive = 0;
-    [ tast_rows , ~ ] = size(tasks);
-    for i = 1:tast_rows
+    [ task_rows , ~ ] = size(tasks);
+    for i = 1:task_rows
         start_node = tasks(i,:).Start;
         end_node = tasks(i,:).End;
         start_num = find(name_arr == start_node{1});

@@ -28,10 +28,15 @@ toc
 distance_path = getDistance(all_path, distances, tasks, node_names);
 toc
 
-% -- specific purpose
+% -- Specific purpose
 unique_distances = unique(distance_path(:,3));
 unique_distances
 % path_from_number_of_distances = all_path(distance_path(:,3) == 418);
 % path_from_number_of_distances
-% thai_name = getTaskName(path_from_number_of_distances{3}, node_names);
+
+% -- Create table 
+% thai_name = getTaskName(path_from_number_of_distances{3}, node_names, distances, tasks);
 % thai_name
+
+% -- Export to .csv file (in output/table.csv)
+% writetable(thai_name,'output/table.csv','Delimiter',',','QuoteStrings',true);
