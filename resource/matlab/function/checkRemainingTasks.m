@@ -1,6 +1,5 @@
 function [remaining_tasks] = checkRemainingTasks(job_done,tasks)
     
-    job_done = job_done';
     if length(job_done) > 1
         active_path = tasks.Path;
         job_arr = cellstr(reshape(job_done,3,[])');

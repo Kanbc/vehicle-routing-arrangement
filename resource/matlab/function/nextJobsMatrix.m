@@ -1,6 +1,5 @@
 function [job_matrix] = nextJobsMatrix(job_done, next_nodes)
-    
-    job_done = job_done';
+
     current_position = job_done(end);
     next_jobs = strcat(current_position, '-', next_nodes);
     

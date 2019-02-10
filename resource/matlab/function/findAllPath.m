@@ -1,28 +1,20 @@
-function [all_path,all_path_t] = findAllPath(old_all_path,tasks)
+function [all_path] = findAllPath(old_all_path,tasks)
     
-    all_path = [];
-
-    for job_done=old_all_path
-        
-        remaining_tasks = checkRemainingTasks(job_done,tasks);
-        [len_rm_tasks,~] = size(remaining_tasks);
-        
-        if len_rm_tasks > 0
-            current_position = job_done(end);
-            next_nodes = startOrEnd(current_position, remaining_tasks);
-            job_matrix = nextJobsMatrix(job_done, next_nodes);
-        else
-            job_matrix = { strcat(job_done', '***') };
-        end
-        all_path = [ all_path; job_matrix ];
+    all_path = cellfun(@(rows) findPath(rows, tasks), old_all_path, 'UniformOutput', false);
+    all_path = vertcat(all_path{:});
+    
+    if ~iscell(all_path)
+        all_path = cellstr(all_path);
     end
     
-    all_path
+    [ ~, step ] = size(all_path{1});
+    disp( strcat('Step  ',{' '}, string(step/3) ) );
+    disp(all_path(1));
+    
     is_done = lastPostionIsZero(all_path);
     if ~is_done
-        all_path_t = char(all_path)';
-        all_path = findAllPath(all_path_t,tasks);
+        all_path = findAllPath(all_path,tasks);
     end
-
+    
 end
 
