@@ -7,8 +7,9 @@ function [all_path] = findAllPath(old_all_path,tasks)
         all_path = cellstr(all_path);
     end
     
-    [ ~, step ] = size(all_path{1});
-    disp( strcat('Step  ',{' '}, string(step/3) ) );
+    [ maxi , ~ ] = size(all_path);
+    [ ~ , step ] = size(all_path{1});
+    disp( strcat({'Step  '}, {' '}, {num2str(step/3)}, {' : maxi = '}, {num2str(maxi)}) );
     disp(all_path(1));
     
     is_done = lastPostionIsZero(all_path);
