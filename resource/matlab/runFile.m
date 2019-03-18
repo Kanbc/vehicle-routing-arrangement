@@ -14,7 +14,7 @@ tasks = tasks_with_nodes(:,{'Start','End','Count'});
 tasks.Path = strcat(tasks.Start, '-', tasks.End); % tasks
 
 % -- demo data
-% job_done = {'A'}; % start_point
+% job_done = {'S'}; % start_point
 % node_names = readtable('data/demo/node_names.csv'); % node_names
 % distances = csvread('data/demo/distances_matrix.csv'); % distances
 % tasks_with_nodes = readtable('data/demo/tasks.csv');
