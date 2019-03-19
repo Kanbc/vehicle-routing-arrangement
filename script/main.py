@@ -113,7 +113,6 @@ class VehicleRoutingArrangement:
     def getTaskName(self, task_path):
         name_arr = self.full_node_names['name'].values
         only_task = task_path[task_path != '0']
-        active_path = self.tasks['path'].values
 
         # แยกจุดเริ่ม-จบ
         def start_f(x): return x.split('-')[0]
