@@ -69,18 +69,34 @@ class VehicleRoutingArrangement:
             job_matrix = self.nextJobsMatrix(each_row, next_nodes)
         return job_matrix
 
+    def currentPosition(self, x):
+        return x.split('-')[-1]
+
     def allPath(self, before_path):
         start_time = time.time()
 
         # Pool Multiple Processing
-        pool = mp.Pool(processes=16)
+        pool = mp.Pool(processes=3)
         output_list = pool.map(self.jobMatrix, before_path)
         output = np.vstack(output_list)
+        # re-output to unique matrix
+        old_output = output.copy()
+        vCurrentPos = np.vectorize(self.currentPosition)
+        last_position = old_output[:,-1]
+        current_pos_arr = vCurrentPos(last_position)
+        output.sort(axis=1)
+        all_groups = pd.DataFrame({
+                        'tasks' : ["".join(i) for i in output.astype(str)], 
+                        'current_pos': list(current_pos_arr) , 
+                        'id': range(len(current_pos_arr)) }).groupby(['tasks','current_pos'])
+        unique_index = all_groups.first()['id'].values
+        output = old_output[unique_index,:]
 
         last_column = output[:, -1]
         all_zero = sum(last_column == '0')
         stop_time = time.time() - start_time
         logging.warning('Output Matrix Shape :' + str(output.shape) +', Use Time :' + str(stop_time) + 's')
+        np.save('output/output.npy', output)
         if all_zero == len(last_column):
             return output
         else:
@@ -151,7 +167,7 @@ class VehicleRoutingArrangement:
         return pd.DataFrame({'Name': name_list, 'Distance': distance_list})
 
 
-start_point = np.array([['A']])  # start_point
+start_point = np.array([['S']])  # start_point
 node_names = pd.read_csv('data/node_names.csv')
 distances = pd.read_csv('data/distances_matrix.csv', header=None).values
 tasks = pd.read_csv('data/demo_tasks.csv')[['Start', 'End', 'Count']]
