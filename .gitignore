@@ -2,3 +2,6 @@
 .ipynb_checkpoints*
 all_path.npy
 info.log
+info16core.log
+output.npy
+python.log
