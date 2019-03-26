@@ -72,28 +72,31 @@ class VehicleRoutingArrangement:
     def currentPosition(self, x):
         return x.split('-')[-1]
 
+    def getUniqueRows(self, output):
+        # re-output to unique matrix
+        old_output = output.copy()
+        vCurrentPos = np.vectorize(self.currentPosition)
+        last_position = old_output[:, -1]
+        current_pos_arr = vCurrentPos(last_position)
+        output.sort(axis=1)
+        all_groups = pd.DataFrame({
+            'tasks': ["".join(i) for i in output.astype(str)],
+            'current_pos': list(current_pos_arr),
+            'id': range(len(current_pos_arr))}).groupby(['tasks', 'current_pos'])
+        unique_index = all_groups.first()['id'].values
+        output = old_output[unique_index, :]
+        return output
+
     def allPath(self, output):
+        # Pool Multiple Processing
+        pool = mp.Pool(processes=23)
         last_column = output[:, -1]
         all_zero = sum(last_column == '0')
         while all_zero != len(last_column):
             start_time = time.time()
-
-            # Pool Multiple Processing
-            pool = mp.Pool(processes=23)
             output_list = pool.map(self.jobMatrix, output)
             output = np.vstack(output_list)
-            # re-output to unique matrix
-            old_output = output.copy()
-            vCurrentPos = np.vectorize(self.currentPosition)
-            last_position = old_output[:, -1]
-            current_pos_arr = vCurrentPos(last_position)
-            output.sort(axis=1)
-            all_groups = pd.DataFrame({
-                'tasks': ["".join(i) for i in output.astype(str)],
-                'current_pos': list(current_pos_arr),
-                'id': range(len(current_pos_arr))}).groupby(['tasks', 'current_pos'])
-            unique_index = all_groups.first()['id'].values
-            output = old_output[unique_index, :]
+            output = self.getUniqueRows(output)
 
             last_column = output[:, -1]
             all_zero = sum(last_column == '0')
@@ -101,6 +104,7 @@ class VehicleRoutingArrangement:
             stop_time = time.time() - start_time
             logging.warning('Output Matrix Shape :' + str(output.shape) +', Use Time :' + str(stop_time) + 's')
             np.save('output/output.npy', output)
+            del output_list
         return output
 
     def getDistance(self, startEndStr):
